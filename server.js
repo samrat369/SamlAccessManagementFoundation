@@ -112,11 +112,7 @@ app.get('/logout', (req, res) => {
         }
         // Clear any cookies related to authentication
         res.clearCookie('connect.sid');
-        SamlStrategy.logout(req, function(err,rq){
-          if(!err){
-            res.redirect(rq);
-          }
-        })
+        
         // Redirect the user to the desired page after logout
         res.redirect('/');
       });
