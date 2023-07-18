@@ -8,6 +8,11 @@
             <li><strong><%= key %>:</strong> <%= value %></li>
           <% }); %>
         </ul>
+    <ul>
+          <% Object.entries(attr).forEach(([key, value]) => { %>
+            <li><strong><%= key %>:</strong> <%= value %></li>
+          <% }); %>
+        </ul>
     
     </div>
 </div>
