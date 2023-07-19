@@ -72,7 +72,6 @@ app.post(
   }),
   function (req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    console.log(req.body);
     // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
     res.redirect("/profile");
   }
@@ -85,6 +84,7 @@ app.get(
     failureFlash: true,
     keepSessionInfo : false,
   }),function (req, res) {
+    console.log(req.body);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.redirect("/callback");
   }
@@ -92,8 +92,7 @@ app.get(
 
 
 app.get("/",(req,res)=>{
-  console.log(req.cookies);
-  console.log(req.isAuthenticated());
+  
   res.render("pages/home",{ title: 'Home'});
 
 })
