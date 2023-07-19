@@ -29,6 +29,21 @@ app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
 });
+app.use((req, res, next) => {
+  // Log the incoming SAML request (before processing)
+  if (req.originalUrl === '/login' && req.method === 'GET') {
+    console.log('SAML Request:');
+    console.log(req.query);
+  }
+
+  // Log the outgoing SAML response (after processing)
+  if (req.originalUrl === '/callback' && req.method === 'POST') {
+    console.log('SAML Response:');
+    console.log(req.body);
+  }
+
+  next();
+});
 
 // Serialize user session
 passport.serializeUser((user, done) => {
