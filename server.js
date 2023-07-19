@@ -115,7 +115,7 @@ app.get('/logout', (req, res) => {
         res.clearCookie('connect.sid');
         
         // Redirect the user to the desired page after logout
-        res.redirect('/');
+        res.redirect('https://mukul1098.pythonanywhere.com/');
       });
     });
 });
