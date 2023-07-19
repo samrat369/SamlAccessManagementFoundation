@@ -74,6 +74,7 @@ app.post(
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     console.log("success");
     console.log(req.cookies);
+    console.log(req.session.samlResponseData);
     // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
     res.redirect("/profile");
   }
