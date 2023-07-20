@@ -154,7 +154,7 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
 app.get('/profile_with_authorization', ensureAuthenticated, (req, res) => {
   // Render user profile or protected content
   const usr =req.user;
-  res.render("pages/authorize_profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] , role:usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/user/roles']});
+  res.render("pages/authorize_profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] , role:usr['http://schemas.auth0.com/user/roles']});
 });
 
 function ensureAuthenticated(req, res, next) {
