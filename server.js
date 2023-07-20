@@ -77,6 +77,21 @@ app.post(
   }
 );
 
+app.post(
+  "/callback_with_authorization",
+  bodyParser.urlencoded({ extended: false }),
+  passport.authenticate("saml", {
+    failureRedirect: "/",
+    failureFlash: true,
+    keepSessionInfo : false,
+  }),
+  function (req, res) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
+    res.redirect("/profile_with_authorization");
+  }
+);
+
 // Initiate SAML authentication
 app.get(
   "/login",passport.authenticate("saml", {
@@ -87,6 +102,18 @@ app.get(
     console.log(req.body);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.redirect("/callback");
+  }
+);
+
+app.get(
+  "/login_with_authorization",passport.authenticate("saml", {
+    failureRedirect: "/",
+    failureFlash: true,
+    keepSessionInfo : false,
+  }),function (req, res) {
+    console.log(req.body);
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.redirect("/callback_with_authorization");
   }
 );
 
@@ -122,6 +149,12 @@ app.get('/profile', ensureAuthenticated, (req, res) => {
   // Render user profile or protected content
   const usr =req.user;
   res.render("pages/profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] , role:usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/user/roles']});
+});
+
+app.get('/profile_with_authorization', ensureAuthenticated, (req, res) => {
+  // Render user profile or protected content
+  const usr =req.user;
+  res.render("pages/authorize_profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] , role:usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/user/roles']});
 });
 
 function ensureAuthenticated(req, res, next) {
