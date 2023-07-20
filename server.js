@@ -121,7 +121,7 @@ app.get('/logout', (req, res) => {
 app.get('/profile', ensureAuthenticated, (req, res) => {
   // Render user profile or protected content
   const usr =req.user;
-  res.render("pages/profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']});
+  res.render("pages/profile",{ title: 'Home',userdetails:JSON.stringify(usr), attr: usr["attributes"] ,usrname: usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] , role:usr['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/user/roles']});
 });
 
 function ensureAuthenticated(req, res, next) {
