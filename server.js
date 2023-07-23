@@ -29,6 +29,7 @@ app.use(passport.session());
 
 app.use(cookieParser());
 app.use((req, res, next) => {
+  req.session.authorize = true;
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   next();
 });
@@ -57,7 +58,7 @@ passport.use(
       // for signon
     
       // console.log(profile)
-      req.session.authorize = true;
+      
       return done(null, profile);
     }
   )
