@@ -90,8 +90,9 @@ app.post(
 // Initiate SAML authentication
 app.get(
   "/login",
-    function (req, res) {
-      req.session.authorize=false
+    function (req, res, next) {
+      req.session.authorize=false;
+      next();
     },
   
     passport.authenticate("saml",{
@@ -101,6 +102,19 @@ app.get(
   })
 );
 
+app.get(
+  "/login_with_authorization",
+    function (req, res, next) {
+      req.session.authorize=true;
+      next();
+    },
+  
+    passport.authenticate("saml",{
+    failureRedirect: "/",
+    failureFlash: true,
+    keepSessionInfo : false,
+  })
+);
 
 
 app.get("/",(req,res)=>{
