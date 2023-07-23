@@ -57,7 +57,7 @@ passport.use(
       // for signon
     
       // console.log(profile)
-      
+      req.session.authorize = true;
       return done(null, profile);
     }
   )
@@ -93,7 +93,12 @@ app.get(
     function (req, res, next) {
       req.session.authorize=false;
       console.log(req.session.authorize);
+      req.session.save(function (err) {
+      if (err) {
+        console.error('Error saving session:', err);
+      }
       next();
+    });
     },
   
     passport.authenticate("saml",{
@@ -105,11 +110,6 @@ app.get(
 
 app.get(
   "/login_with_authorization",
-    function (req, res, next) {
-      req.session.authorize=true;
-      next();
-    },
-  
     passport.authenticate("saml",{
     failureRedirect: "/",
     failureFlash: true,
