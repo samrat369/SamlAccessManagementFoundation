@@ -1,9 +1,9 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const passport2 = require('passport');
+
 const SamlStrategy = require('passport-saml').Strategy;
-const SamlStrategy2 = require('passport-saml').Strategy;
+
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
@@ -26,8 +26,7 @@ app.use(session({
 // Set up passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport2.initialize());
-app.use(passport2.session());
+
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -64,34 +63,6 @@ passport.use(
   )
 );
 
-passport2.serializeUser((user, done) => {
-  done(null, user);
-});
-
-// Deserialize user session
-passport2.deserializeUser((user, done) => {
-  done(null, user);
-});
-passport2.use(
-  new SamlStrategy(
-    {
-      callbackUrl: "https://saml-access-management-foundation.onrender.com/callback_with_authorization",
-      entryPoint: "https://dev-npofkt2fait2dmyy.us.auth0.com/samlp/w3mS9TGUc3huSRcViFeWEhbEYKcsusdE?connection=Username-Password-Authentication",
-      issuer: "https://saml-access-management-foundation.onrender.com/callback_with_authorization",
-      cert: "MIIDHTCCAgWgAwIBAgIJSi7z01cbQMBPMA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNVBAMTIWRldi1ucG9ma3QyZmFpdDJkbXl5LnVzLmF1dGgwLmNvbTAeFw0yMzAyMjAxMDM1MDNaFw0zNjEwMjkxMDM1MDNaMCwxKjAoBgNVBAMTIWRldi1ucG9ma3QyZmFpdDJkbXl5LnVzLmF1dGgwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANlHohjY8jO9zuOOUvK0DNdxE8SOY68Di53JJqNHMg1+oDZoNVbMrEVBjaPqjNdS8Ld7UzRSAs+3DTjWjci0+NXqS+f9psb1LPovw1Fd1zqNw1p+Eh90mg7xYzvWKWlIrWlQIGtAKgCJhQp8tLMy6oxn4RYvFY7v2TBwOEeNpx/IXttwIzxUExeKHKwPfz9iihI10usVYVLaGnA6D+PhMFuxV/ZjhQ1I+MxjRV0TxkLLgSUqXA2czJInq3TPaZoCQSxkpCIMpPi6jR0HrN0+tWrkVdZM4gl3vXQrcopCq2jxjHQMpTUPE6cEJo++4xFMZbRXYLv7BcDUXR9BIMg7YeUCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU4ZHsqBmjEWoXjbMwxi5faEmIAGIwDgYDVR0PAQH/BAQDAgKEMA0GCSqGSIb3DQEBCwUAA4IBAQCCZX80lxRXdWkp2aEMj/IFsPvkI+m7RMj5OYfy8+aIQFUvHVSuok/9Dd9DedyFaszLZ4jNAJpVz8cjfZn7fkrNFd3dPEDwfQbmB7mN4SdsRXJWffy7coMUgVk38x3G7HlHlzKp18KES1UvyHZygzUEJTZR/wtUWURtEti/QdjJrq9XANwQhGAbD+3aYg0o36OaPyU1JbRCD6WUO8klnLcsg6EK4gLBaIc5B2Uaq3Vr3QaoDTKO8k0Z5lBvkagR/4BpNkcnAyPD/gjdhtOZ+KNfldi4xxoRNCI1yqFW3oszCQM/poOYuNyZGbV/gaQjQOdX4hBjGJ09mh+Cw3pYqw8u",
-      acceptedClockSkewMs : -1,
-      logoutUrl: "https://saml-access-management-foundation.onrender.com/logout",
-      
-    },
-    function (profile, done) {
-      // for signon
-    
-      // console.log(profile)
-      
-      return done(null, profile);
-    }
-  )
-);
 
 const bodyParser = require("body-parser");
 
@@ -106,28 +77,18 @@ app.post(
   function (req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
+    if(req.session["authorize"]){
+      res.redirect("/profile_with_authorization");
+    }
     res.redirect("/profile");
   }
 );
 
-app.post(
-  "/callback_with_authorization",
-  bodyParser.urlencoded({ extended: false }),
-  passport2.authenticate("saml", {
-    failureRedirect: "/",
-    failureFlash: true,
-    keepSessionInfo : false,
-  }),
-  function (req, res) {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
-    res.redirect("/profile_with_authorization");
-  }
-);
+
 
 // Initiate SAML authentication
 app.get(
-  "/login",passport.authenticate("saml", {
+  "/login",passport.authenticate("saml", add_session_false, {
     failureRedirect: "/",
     failureFlash: true,
     keepSessionInfo : false,
@@ -139,14 +100,14 @@ app.get(
 );
 
 app.get(
-  "/login_with_authorization",passport2.authenticate("saml", {
+  "/login_with_authorization", add_session, passport.authenticate("saml", {
     failureRedirect: "/",
     failureFlash: true,
     keepSessionInfo : false,
   }),function (req, res) {
     console.log(req.body);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    res.redirect("/callback_with_authorization");
+    res.redirect("/callback");
   }
 );
 
@@ -196,6 +157,14 @@ function ensureAuthenticated(req, res, next) {
     return next();
   }
   res.redirect('/login');
+}
+
+function add_session(req, res, next) {
+  req.session["authorize"] = true;
+}
+
+function add_session_false(req, res, next) {
+  req.session["authorize"] = false;
 }
 
 
