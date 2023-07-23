@@ -88,7 +88,7 @@ app.post(
 
 // Initiate SAML authentication
 app.get(
-  "/login",passport.authenticate("saml", add_session_false, {
+  "/login",passport.authenticate("saml",{
     failureRedirect: "/",
     failureFlash: true,
     keepSessionInfo : false,
@@ -99,17 +99,6 @@ app.get(
   }
 );
 
-app.get(
-  "/login_with_authorization", add_session, passport.authenticate("saml", {
-    failureRedirect: "/",
-    failureFlash: true,
-    keepSessionInfo : false,
-  }),function (req, res) {
-    console.log(req.body);
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    res.redirect("/callback");
-  }
-);
 
 
 app.get("/",(req,res)=>{
