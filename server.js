@@ -92,6 +92,7 @@ app.get(
   "/login",
     function (req, res, next) {
       req.session.authorize=false;
+      console.log(req.session.authorize);
       next();
     },
   
