@@ -73,7 +73,7 @@ app.post(
   passport.authenticate("saml", {
     failureRedirect: "/",
     failureFlash: true,
-    keepSessionInfo : false,
+    
   }),
   function (req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -114,7 +114,7 @@ app.get(
     passport.authenticate("saml",{
     failureRedirect: "/",
     failureFlash: true,
-    keepSessionInfo : false,
+    
   })
 );
 
