@@ -77,8 +77,8 @@ app.post(
   function (req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
-    console.log(req.session["authorize"]);
-    if(req.session["authorize"]){
+    console.log(req.session.authorize);
+    if(req.session.authorize){
       res.redirect("/profile_with_authorization");
     }
     res.redirect("/profile");
