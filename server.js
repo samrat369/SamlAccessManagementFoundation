@@ -28,11 +28,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cookieParser());
-app.use((req, res, next) => {
-  req.session.authorize = true;
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  next();
-});
 
 // Serialize user session
 passport.serializeUser((user, done) => {
@@ -76,8 +71,6 @@ app.post(
     
   }),
   function (req, res) {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    // console.log(req.user['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']);
     console.log(req.session.authorize);
     if(req.session.authorize){
       res.redirect("/profile_with_authorization");
@@ -166,13 +159,7 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
-function add_session(req, res, next) {
-  req.session["authorize"] = true;
-}
 
-function add_session_false(req, res, next) {
-  req.session["authorize"] = false;
-}
 
 
 
