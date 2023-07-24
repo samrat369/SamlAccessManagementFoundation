@@ -62,24 +62,6 @@ passport.use(
 
 const bodyParser = require("body-parser");
 
-app.post(
-  "/callback",
-  bodyParser.urlencoded({ extended: false }),
-  passport.authenticate("saml", {
-    failureRedirect: "/",
-    failureFlash: true,
-    
-  }),
-  function (req, res) {
-    console.log(req.session.authorize);
-    if(req.session.authorize){
-      res.redirect("/profile_with_authorization");
-    }
-    res.redirect("/profile");
-  }
-);
-
-
 
 // Initiate SAML authentication
 app.get(
@@ -98,7 +80,6 @@ app.get(
     passport.authenticate("saml",{
     failureRedirect: "/",
     failureFlash: true,
-    keepSessionInfo : false,
   })
 );
 
@@ -111,12 +92,23 @@ app.get(
   })
 );
 
+app.post(
+  "/callback",
+  bodyParser.urlencoded({ extended: false }),
+  passport.authenticate("saml", {
+    failureRedirect: "/",
+    failureFlash: true,
+    
+  }),
+  function (req, res) {
+    console.log(req.session.authorize);
+    if(req.session.authorize){
+      res.redirect("/profile_with_authorization");
+    }
+    res.redirect("/profile");
+  }
+);
 
-app.get("/",(req,res)=>{
-  
-  res.render("pages/home",{ title: 'Home'});
-
-})
 
 app.get('/logout', (req, res) => {
     // Destroy the session
